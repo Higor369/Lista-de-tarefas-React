@@ -1,7 +1,11 @@
 import React from 'react'
 import todoForm from './todoForm'
+import { connect } from 'react-redux'
 import IconButton from '../template/iconButton'
-export default props => {
+import { markAsDone, markAsPending, remove} from './todoAction'
+import { bindActionCreators} from  'redux'
+
+const todoList = props => {
 
 
     const renderRows = () => {
@@ -13,25 +17,25 @@ export default props => {
                 <td className={x.done ? 'markedAsDone' : ''}>
                    {x.description}
                 </td>
-                
+
                 <td>
                 <IconButton style='success' icon='check' hide={x.done}
                     onClick={() => props.markAsDone(x)}></IconButton>
-                <IconButton style='warning' icon='undo' hide={!x.done} 
+                <IconButton style='warning' icon='undo' hide={!x.done}
                     onClick={() => props.markAsPending(x)}></IconButton>
                 <IconButton style='danger' icon='trash-o'
-                    onClick={() => props.handleRemove(x)}></IconButton>
+                    onClick={() => props.Remove(x)}></IconButton>
             </td>
             </tr>
             )
             )
-       
+
         )
     }
 
     return(
     <div>
-        <table className='tabçe'>
+        <table className='table'>
             <thead>
                 <tr>
                     <th>Descrição</th>
@@ -42,7 +46,24 @@ export default props => {
                 {renderRows()}
             </tbody>
         </table>
-        
+
     </div>
     )
 }
+
+const mapStateToProps = state => {
+    return({
+        list: state.todo.list
+    })
+}
+
+const mapDispatchToProps = dispatch =>(bindActionCreators({
+    markAsDone, remove, markAsPending},dispatch
+    ))
+
+// const mapDispatchToProps = dispatch =>(bindActionCreators({ // as actions que eu vou disparar para o storage
+//     changeDescription, search, add, clear},dispatch
+// ))
+
+export default connect(mapStateToProps, mapDispatchToProps)(todoList)
+
